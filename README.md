@@ -1,121 +1,161 @@
 # CognitiveFlow – AI Context-Aware Workflow Engine
 
-**CognitiveFlow** is an intelligent desktop assistant that understands your active context (open windows, applications) and leverages Google's Gemini 1.5 Pro AI to automate workflows, generate content, and analyze data in real-time. Built with a modern Python FastAPI backend and a premium React + Electron frontend.
+**CognitiveFlow** is a production-ready hackathon MVP that reads active desktop context, sends user intent to Gemini AI, records workflows in SQLite, and lets users replay and export AI outputs from a premium desktop-style UI.
 
 ![Project Status](https://img.shields.io/badge/Status-MVP-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-## 🚀 Key Features
+## Project Overview
 
-*   **Context Awareness**: Automatically detects the active window and application name (with fallback for headless environments).
-*   **AI Processing**: Integrates with Google Gemini 1.5 Pro for advanced natural language understanding and generation.
-*   **Workflow Recording**: Saves all interactions, context, and AI responses to a local SQLite database.
-*   **Smart Replay**: One-click replay of past workflows with updated context.
-*   **Premium UI**: A "Logitech-style" dark, minimal, and responsive dashboard built with React and Tailwind CSS.
-*   **Robust Architecture**: Async FastAPI backend, modular code structure, and secure environment configuration.
+- Detect active window title and app name via `pygetwindow`
+- Process requests with FastAPI + Gemini API
+- Store workflows in SQLite with timestamps and replay support
+- Render a dark, minimal React + Tailwind dashboard
+- Run in browser or Electron shell
+- Export AI responses as `.txt` and `.pdf`
+- Start fresh with `New Workflow` and manage history with delete controls
 
-## 🏗 Architecture
+## Architecture
 
 ```ascii
-+-----------------------+       +-----------------------+       +-----------------------+
-|                       |       |                       |       |                       |
-|   Electron / React    | <---> |    FastAPI Backend    | <---> |   Google Gemini API   |
-|      Frontend         | HTTP  |       (Python)        | HTTPS |      (AI Model)       |
-|                       |       |                       |       |                       |
-+-----------------------+       +-----------------------+       +-----------------------+
++-----------------------+       +-----------------------+       +-------------------------+
+|                       |       |                       |       |                         |
+|  React + Tailwind UI  | <---> |    FastAPI Backend    | <---> |  Google Gemini API      |
+|  (Browser/Electron)   | HTTP  |      (Python)         | HTTPS |  (Model chosen by key)  |
+|                       |       |                       |       |                         |
++-----------------------+       +-----------------------+       +-------------------------+
            ^                                |
            |                                v
-           |                        +----------------+
-           |                        |                |
-           +------------------------| SQLite Database|
-                                    |                |
-                                    +----------------+
+           |                        +-----------------------+
+           |                        |       SQLite DB       |
+           +------------------------|   workflow history    |
+                                    +-----------------------+
                                             ^
                                             |
-                                    +----------------+
-                                    |                |
-                                    | pygetwindow OS |
-                                    |   Integration  |
-                                    |                |
-                                    +----------------+
+                                    +-----------------------+
+                                    |    pygetwindow OS     |
+                                    |   active context API  |
+                                    +-----------------------+
 ```
 
-## 🛠 Tech Stack
+## Tech Stack
 
-*   **Backend**: Python 3.10+, FastAPI (Async), SQLAlchemy, Google Generative AI (`google-generativeai`), PyGetWindow.
-*   **Frontend**: React 18, Tailwind CSS, Lucide Icons, Axios.
-*   **Desktop Wrapper**: Electron.
-*   **Database**: SQLite (Local file-based).
+- Backend: Python, FastAPI, SQLAlchemy, SQLite, `google-generativeai`, `python-dotenv`, `pygetwindow`
+- Frontend: React 18, Tailwind CSS, Axios, Lucide Icons, jsPDF
+- Desktop wrapper: Electron
 
-## 📦 Setup Instructions
+## Project Structure
+
+```text
+cognitiveflow/
+  backend/
+    main.py
+    ai_engine.py
+    workflow.py
+    database.py
+    config.py
+    requirements.txt
+    .env.example
+    database.db
+  frontend/
+    src/
+      App.js
+      index.js
+      index.css
+    public/
+      electron.js
+      index.html
+    scripts/
+      start-electron.js
+    package.json
+  HACKATHON_SUBMISSION.md
+  LICENSE
+  README.md
+```
+
+## Setup Instructions
 
 ### Prerequisites
 
-*   Python 3.8 or higher
-*   Node.js 16 or higher
-*   Google Gemini API Key
+- Python 3.10+
+- Node.js 18+
+- Gemini API key
 
 ### 1. Backend Setup
 
-1.  Navigate to the `backend` directory:
-    ```bash
-    cd backend
-    ```
+```bash
+cd backend
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-2.  Create and activate a virtual environment:
-    ```bash
-    python -m venv venv
-    # Windows
-    venv\Scripts\activate
-    # macOS/Linux
-    source venv/bin/activate
-    ```
+Create `backend/.env` (this file is gitignored):
 
-3.  Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+```env
+GEMINI_API_KEY=your_actual_api_key_here
+GEMINI_MODEL=gemini-2.5-pro
+```
 
-4.  Configure Environment Variables:
-    *   The project expects a `.env` file in the `backend/` directory.
-    *   Create `backend/.env` with the following content:
-        ```
-        GEMINI_API_KEY=your_actual_api_key_here
-        ```
+Notes:
+- `backend/.env.example` is committed for sharing config shape.
+- You can set `GEMINI_MODEL=gemini-1.5-pro` if your key has access; otherwise use 2.5/3.0.
 
-5.  Run the Backend Server:
-    ```bash
-    python main.py
-    ```
-    *   The API will start at `http://localhost:8000`.
-    *   Swagger UI documentation is available at `http://localhost:8000/docs`.
+Run backend:
+
+```bash
+python main.py
+```
+
+Backend URLs:
+- API root: `http://localhost:8000`
+- Swagger docs: `http://localhost:8000/docs`
 
 ### 2. Frontend Setup
 
-1.  Navigate to the `frontend` directory:
-    ```bash
-    cd frontend
-    ```
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
+This runs:
+- React dev server at `http://localhost:3000`
+- Electron app connected to the same UI
 
-3.  Run the Development Server:
-    ```bash
-    npm run dev
-    ```
-    *   This will launch both the React dev server and the Electron wrapper.
+## API Summary
 
-## 🔮 Future Improvements
+- `GET /context`: returns active window context
+- `POST /ai`: sends text + mode to Gemini and optionally records workflow
+- `GET /workflows`: lists saved workflows
+- `POST /workflows/replay/{id}`: replays saved workflow with current context
+- `DELETE /workflows/{id}`: removes one workflow item
+- `DELETE /workflows`: clears all workflow history
 
-*   **Voice Control**: Integrate speech-to-text for hands-free operation.
-*   **Cross-Platform Context**: Enhance window detection support for macOS (Quartz) and Linux (X11/Wayland) natively.
-*   **Plugin System**: Allow custom Python scripts to be triggered by specific workflows.
-*   **Local LLM Support**: Add support for local models (Llama 3, Mistral) for offline privacy.
+## Exporting AI Responses
 
----
+From the UI response panel:
+- Click `Export TXT` to download plain text output
+- Click `Export PDF` to download formatted PDF output
 
-**Author**: Cholaraja R P
+## Error Handling
+
+- Async FastAPI endpoints with structured HTTP errors
+- AI failures return explicit API error details (instead of silent success payloads)
+- Database write errors are rolled back safely
+- Frontend surfaces backend error messages in the response panel
+
+## Future Improvements
+
+- Role-based auth and encrypted per-user workflow storage
+- Multi-provider AI routing (Gemini/OpenAI/local fallback)
+- Scheduled automations and background agents
+- Rich export templates (markdown, DOCX, branded PDF)
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE`.
 
