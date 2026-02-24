@@ -1,7 +1,9 @@
 fastapi
 uvicorn
+sqlalchemy
 google-generativeai
 pygetwindow
 python-dotenv
-sqlalchemy
 pydantic
+requests
+httpx
