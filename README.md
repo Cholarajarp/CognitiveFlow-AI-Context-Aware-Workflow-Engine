@@ -97,4 +97,4 @@ CognitiveFlow is an AI-powered desktop assistant that understands your active co
 ---
 
 **License**: MIT
-**Author**: CognitiveFlow Team
+**Author**: Cholaraja R P
