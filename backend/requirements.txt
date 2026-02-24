@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+google-generativeai
+pygetwindow
+python-dotenv
+sqlalchemy
+pydantic

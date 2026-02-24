@@ -1,0 +1,9 @@
+{
+  "short_name": "CognitiveFlow",
+  "name": "CognitiveFlow AI Workflow Engine",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
