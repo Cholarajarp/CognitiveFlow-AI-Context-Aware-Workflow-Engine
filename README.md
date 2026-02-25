@@ -1,6 +1,6 @@
 # CognitiveFlow – AI Context-Aware Workflow Engine
 
-**CognitiveFlow** is a production-ready hackathon MVP that reads active desktop context, sends user intent to Gemini AI, records workflows in SQLite, and lets users replay and export AI outputs from a premium desktop-style UI.
+**CognitiveFlow** is a production-ready that reads active desktop context, sends user intent to Gemini AI, records workflows in SQLite, and lets users replay and export AI outputs from a premium desktop-style UI.
 
 ![Project Status](https://img.shields.io/badge/Status-MVP-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
